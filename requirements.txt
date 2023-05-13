@@ -1,0 +1,7 @@
+pandas
+mediapipe
+tqdm
+jupyter
+albumentations
+tensorflow
+python-opencv
