@@ -7,7 +7,7 @@ class BaseAttention(tf.keras.layers.Layer):
         super().__init__()
         self.mha = tf.keras.layers.MultiHeadAttention(**kwargs)
         self.add = tf.keras.layers.Add()
-        self.normalize = tf.keras.layers.Normalization()
+        self.normalize = tf.keras.layers.LayerNormalization()
 
 
 class GlobalSelfAttention(BaseAttention):
@@ -96,16 +96,13 @@ class GISLRModelv2():
 
         x = GlobalSelfAttention(
             num_heads=4,
-            key_dim=64,
+            key_dim=128,
             # output_shape=128,
             dropout=0.25
         )(model_input)
-        x = tf.keras.layers.Dense(512, activation="relu")(x)
-        x = tf.keras.layers.Dropout(0.25)(x)
         x = tf.keras.layers.Dense(256, activation="relu")(x)
-        x = tf.keras.layers.Dropout(0.25)(x)
+        x = tf.keras.layers.Dropout(0.5)(x)
         x = tf.keras.layers.GlobalAveragePooling1D()(x)
-
         output = tf.keras.layers.Dense(n_classes, activation="softmax")(x)
 
         self.model = tf.keras.Model(model_input, output)
@@ -113,7 +110,7 @@ class GISLRModelv2():
     def get_model(self):
         self.model.compile(
             loss=tf.keras.losses.CategoricalCrossentropy(),
-            optimizer=tf.keras.optimizers.Adam(),
+            optimizer=tf.keras.optimizers.Adam(learning_rate=3e-4),
             metrics=[tf.keras.metrics.CategoricalAccuracy()]
         )
 

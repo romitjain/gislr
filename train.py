@@ -81,7 +81,7 @@ if __name__ == "__main__":
         print(x.shape)
         break
 
-    model = GISLRModel(
+    model = GISLRModelv2(
         input_shape=x.shape[1:],
         n_classes=df.y_label.nunique()
     ).get_model()
